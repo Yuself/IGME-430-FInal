@@ -2,7 +2,16 @@ const React = require('react');
 const ReactDOM = require('react-dom/client');
 
 const { useState } = React;
+const [conversationStarted, setConversationStarted] = useState(false);
+const [lockedMode, setLockedMode] = useState('');
+const [debugEnabled, setDebugEnabled] = useState(false);
+const [lockedDebugEnabled, setLockedDebugEnabled] = useState(false);
+const [showReviewPanel, setShowReviewPanel] = useState(false);
+const [isSaving, setIsSaving] = useState(false);
 
+
+const [reviewForm, setReviewForm] = useState(defaultReviewForm);
+const [openInfoKey, setOpenInfoKey] = useState('');
 /* Returns a simple baseline-style reply */
 const getBaselineReply = (message) => {
     const lowerMessage = message.toLowerCase();
@@ -210,6 +219,10 @@ const ChatSection = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const onSend = async () => {
+        if (!conversationStarted) {
+            return;
+        }
+
         const trimmedMessage = inputValue.trim();
 
         if (!trimmedMessage || isLoading) {
@@ -233,7 +246,7 @@ const ChatSection = () => {
                 },
                 body: JSON.stringify({
                     message: trimmedMessage,
-                    mode,
+                    mode: lockedMode,
                 }),
             });
 
@@ -300,6 +313,99 @@ const ChatSection = () => {
             </div>
         </section>
     );
+};
+
+const defaultReviewForm = {
+    strangenessScore: 3,
+    roleAdherenceScore: 3,
+    consistencyScore: 3,
+    helpfulnessScore: 3,
+    aiIssueFlags: [],
+    controlImprovement: 'not_applicable',
+    notes: '',
+};
+const startConversation = () => {
+    setConversationStarted(true);
+    setLockedMode(mode);
+    setLockedDebugEnabled(debugEnabled);
+    setShowReviewPanel(false);
+    setReviewForm(defaultReviewForm);
+
+    setMessages([
+        {
+            sender: 'npc',
+            text: 'You may speak, but you may not enter.',
+        },
+    ]);
+
+    setNpcState({
+        attitude: 'neutral',
+        objective: 'inform',
+    });
+};
+const endConversation = () => {
+  setConversationStarted(false);
+  setShowReviewPanel(true);
+
+  setReviewForm((prev) => ({
+    ...prev,
+    controlImprovement:
+      lockedMode === 'structured' ? 'not_sure' : 'not_applicable',
+  }));
+};
+const generateConversationTitle = () => {
+  const firstUserMessage = messages.find((msg) => msg.sender === 'user');
+
+  if (!firstUserMessage) {
+    return 'Untitled Conversation';
+  }
+
+  return firstUserMessage.text.slice(0, 40);
+};
+const getTurnCount = () => (
+  messages.filter((msg) => msg.sender === 'user').length
+);
+const saveConversation = async () => {
+  if (isSaving) {
+    return;
+  }
+
+  const payload = {
+    title: generateConversationTitle(),
+    mode: lockedMode,
+    debugVisible: lockedDebugEnabled,
+    messages,
+    finalAttitude: npcState.attitude,
+    finalObjective: npcState.objective,
+    turnCount: getTurnCount(),
+    review: reviewForm,
+  };
+
+  setIsSaving(true);
+
+  try {
+    const response = await fetch('/saveConversation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.log(data.error || 'Failed to save conversation.');
+      return;
+    }
+
+    console.log('Conversation saved successfully.');
+    setShowReviewPanel(false);
+  } catch (err) {
+    console.log('Failed to save conversation.');
+  } finally {
+    setIsSaving(false);
+  }
 };
 
 /* How it works section */

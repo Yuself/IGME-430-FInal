@@ -17,9 +17,13 @@ const router = (app) => {
   app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
   app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
 
+    //final
   app.post('/chat', mid.requiresLogin, controllers.Chat.chat);
+  
+  app.post('/saveConversation', mid.requiresLogin, controllers.Conversation.saveConversation);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+
 };
 
 module.exports = router;
