@@ -17,6 +17,8 @@ const router = (app) => {
   app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
   app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
 
+  app.post('/chat', mid.requiresLogin, controllers.Chat.chat);
+
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 
