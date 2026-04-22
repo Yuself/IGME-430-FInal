@@ -190,3 +190,158 @@ main {
     justify-content: flex-start;
   }
 }
+.reviewField {
+    margin-bottom: 16px;
+}
+
+.reviewField label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.reviewField button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.infoText {
+    margin: 6px 0 10px 0;
+    font-size: 0.95rem;
+    color: #d1d5db;
+}
+.debugPanel {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 260px;
+    align-self: flex-start;
+}
+
+.debugPanel h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+.preConversationControls,
+.activeConversationControls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0 20px 0;
+    flex-wrap: wrap;
+}
+
+.debugToggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.primaryActionBtn {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.primaryActionBtn:hover {
+    background: #1d4ed8;
+}
+.preConversationTopRow {
+    display: flex;
+    justify-content: flex-start;
+    margin: 8px 0 12px 0;
+}
+.reviewPanel {
+    margin-top: 24px;
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.reviewPanel h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.reviewField,
+.reviewIssueGroup {
+    margin-bottom: 18px;
+}
+
+.reviewField label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.reviewField input[type="range"] {
+    width: 100%;
+}
+
+.reviewField button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.infoText {
+    margin: 6px 0 10px 0;
+    font-size: 0.95rem;
+    color: #d1d5db;
+}
+
+.reviewIssueGroup label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.reviewPanel textarea {
+    width: 100%;
+    min-height: 100px;
+    margin-top: 8px;
+    border-radius: 10px;
+    border: 1px solid #4b5563;
+    background: #111827;
+    color: #f3f4f6;
+    padding: 12px;
+    resize: vertical;
+}
+
+.reviewPanel select {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #4b5563;
+    background: #111827;
+    color: #f3f4f6;
+}
+
+.reviewPanel button[type="button"] {
+    margin-top: 16px;
+}

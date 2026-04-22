@@ -17,10 +17,13 @@ const router = (app) => {
   app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
   app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
 
-    //final
+  //final
   app.post('/chat', mid.requiresLogin, controllers.Chat.chat);
-  
+
   app.post('/saveConversation', mid.requiresLogin, controllers.Conversation.saveConversation);
+  app.get('/history', mid.requiresLogin, controllers.History.historyPage);
+  app.get('/getConversations', mid.requiresLogin, controllers.History.getConversations);
+  app.get('/getConversationById', mid.requiresLogin, controllers.History.getConversationById);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 

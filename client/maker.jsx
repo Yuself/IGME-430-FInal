@@ -117,13 +117,14 @@ const HomeSection = () => {
 };
 
 /* Mode switch buttons */
-const ModeToggle = ({ mode, setMode }) => {
+const ModeToggle = ({ mode, setMode, disabled }) => {
     return (
         <div className="modeToggle">
             <button
                 type="button"
                 className={mode === 'baseline' ? 'active' : ''}
                 onClick={() => setMode('baseline')}
+                disabled={disabled}
             >
                 Baseline
             </button>
@@ -131,6 +132,7 @@ const ModeToggle = ({ mode, setMode }) => {
                 type="button"
                 className={mode === 'structured' ? 'active' : ''}
                 onClick={() => setMode('structured')}
+                disabled={disabled}
             >
                 Structured
             </button>
@@ -207,7 +209,7 @@ const ChatSection = () => {
         consistencyScore: 3,
         helpfulnessScore: 3,
         aiIssueFlags: [],
-        controlImprovement: 'not_applicable',
+        controlImprovement: 'not_sure',
         notes: '',
     };
 
@@ -311,6 +313,7 @@ const ChatSection = () => {
         setLockedDebugEnabled(debugEnabled);
         setShowReviewPanel(false);
         setReviewForm(defaultReviewForm);
+        setOpenInfoKey('');
 
         setMessages([
             {
@@ -430,7 +433,14 @@ const ChatSection = () => {
                         <h2>Archive Guard</h2>
                         <p>A single NPC prototype for baseline vs structured dialogue.</p>
                     </div>
-                    <ModeToggle mode={mode} setMode={setMode} />
+                </div>
+
+                <div className="preConversationTopRow">
+                    <ModeToggle
+                        mode={mode}
+                        setMode={setMode}
+                        disabled={conversationStarted}
+                    />
                 </div>
                 <div className="conversationControls">
                     {!conversationStarted && (
@@ -441,10 +451,14 @@ const ChatSection = () => {
                                     checked={debugEnabled}
                                     onChange={(e) => setDebugEnabled(e.target.checked)}
                                 />
-                                Debug Mode
+                                <span>Debug Mode</span>
                             </label>
 
-                            <button type="button" onClick={startConversation}>
+                            <button
+                                type="button"
+                                className="primaryActionBtn"
+                                onClick={startConversation}
+                            >
                                 Start Conversation
                             </button>
                         </div>
@@ -465,7 +479,15 @@ const ChatSection = () => {
                     )}
                 </div>
                 <div className="chatLayout">
-                    <NPCStatusPanel npcState={npcState} />
+                    <div className="chatMain">
+                        <MessageList messages={messages} messageListRef={messageListRef} />
+                        <MessageInput
+                            inputValue={inputValue}
+                            setInputValue={setInputValue}
+                            onSend={onSend}
+                            isLoading={isLoading}
+                        />
+                    </div>
 
                     {lockedDebugEnabled && (
                         <div className="debugPanel">
@@ -476,16 +498,6 @@ const ChatSection = () => {
                             <p><strong>Goal:</strong> protect the archive</p>
                         </div>
                     )}
-
-                    <div className="chatMain">
-                        <MessageList messages={messages} messageListRef={messageListRef} />
-                        <MessageInput
-                            inputValue={inputValue}
-                            setInputValue={setInputValue}
-                            onSend={onSend}
-                            isLoading={isLoading}
-                        />
-                    </div>
                 </div>
 
                 {showReviewPanel && (
@@ -518,8 +530,23 @@ const ChatSection = () => {
                             />
                         </div>
 
-                        <label>
-                            Role Adherence: {reviewForm.roleAdherenceScore}
+                        <div className="reviewField">
+                            <label>
+                                Role Adherence: {reviewForm.roleAdherenceScore}
+                                <button
+                                    type="button"
+                                    onClick={() => setOpenInfoKey(openInfoKey === 'roleAdherenceScore' ? '' : 'roleAdherenceScore')}
+                                >
+                                    !
+                                </button>
+                            </label>
+
+                            {openInfoKey === 'roleAdherenceScore' && (
+                                <p className="infoText">
+                                    Measures how well the NPC stayed in character as the Archive Guard.
+                                </p>
+                            )}
+
                             <input
                                 type="range"
                                 min="1"
@@ -527,10 +554,25 @@ const ChatSection = () => {
                                 value={reviewForm.roleAdherenceScore}
                                 onChange={(e) => updateReviewField('roleAdherenceScore', Number(e.target.value))}
                             />
-                        </label>
+                        </div>
 
-                        <label>
-                            Consistency: {reviewForm.consistencyScore}
+                        <div className="reviewField">
+                            <label>
+                                Consistency: {reviewForm.consistencyScore}
+                                <button
+                                    type="button"
+                                    onClick={() => setOpenInfoKey(openInfoKey === 'consistencyScore' ? '' : 'consistencyScore')}
+                                >
+                                    !
+                                </button>
+                            </label>
+
+                            {openInfoKey === 'consistencyScore' && (
+                                <p className="infoText">
+                                    Measures whether the NPC’s replies stayed stable and did not contradict earlier behavior.
+                                </p>
+                            )}
+
                             <input
                                 type="range"
                                 min="1"
@@ -538,10 +580,25 @@ const ChatSection = () => {
                                 value={reviewForm.consistencyScore}
                                 onChange={(e) => updateReviewField('consistencyScore', Number(e.target.value))}
                             />
-                        </label>
+                        </div>
 
-                        <label>
-                            Helpfulness: {reviewForm.helpfulnessScore}
+                        <div className="reviewField">
+                            <label>
+                                Helpfulness: {reviewForm.helpfulnessScore}
+                                <button
+                                    type="button"
+                                    onClick={() => setOpenInfoKey(openInfoKey === 'helpfulnessScore' ? '' : 'helpfulnessScore')}
+                                >
+                                    !
+                                </button>
+                            </label>
+
+                            {openInfoKey === 'helpfulnessScore' && (
+                                <p className="infoText">
+                                    Measures whether the NPC’s replies were clear enough to keep the conversation moving.
+                                </p>
+                            )}
+
                             <input
                                 type="range"
                                 min="1"
@@ -549,7 +606,7 @@ const ChatSection = () => {
                                 value={reviewForm.helpfulnessScore}
                                 onChange={(e) => updateReviewField('helpfulnessScore', Number(e.target.value))}
                             />
-                        </label>
+                        </div>
 
                         {lockedMode === 'structured' && (
                             <label>
@@ -565,7 +622,7 @@ const ChatSection = () => {
                                 </select>
                             </label>
                         )}
-                        //check box
+                        {/* check box */}
                         <div className="reviewIssueGroup">
                             <p><strong>Common AI Issues</strong></p>
 
