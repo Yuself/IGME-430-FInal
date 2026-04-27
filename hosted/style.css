@@ -411,3 +411,36 @@ main {
 .reviewPanel button[type="button"] {
     margin-top: 16px;
 }
+
+.notFoundPage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.notFoundContent {
+    max-width: 560px;
+    text-align: center;
+}
+
+.notFoundContent h1 {
+    margin: 0;
+    font-size: 6rem;
+}
+
+.notFoundActions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.notFoundActions a {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+}

@@ -31,6 +31,13 @@ const router = (app) => {
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 
+  app.use((req, res) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api') || req.accepts('html') !== 'html') {
+      return res.status(404).json({ error: 'Route not found.' });
+    }
+
+    return res.status(404).render('notFound');
+  });
 };
 
 module.exports = router;
