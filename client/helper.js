@@ -4,13 +4,13 @@
 */
 const handleError = (message) => {
   globalThis.document.getElementById('errorMessage').textContent = message;
-  globalThis.document.getElementById('domoMessage').classList.remove('hidden');
+  globalThis.document.getElementById('authMessage').classList.remove('hidden');
 };
 
 /* Hides the error message box.
 */
 const hideError = () => {
-  globalThis.document.getElementById('domoMessage').classList.add('hidden');
+  globalThis.document.getElementById('authMessage').classList.add('hidden');
 };
 
 /* Sends post requests to the server using fetch. Will look for various

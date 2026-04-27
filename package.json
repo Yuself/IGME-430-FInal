@@ -1,22 +1,25 @@
 {
-  "name": "domomaker",
+  "name": "archive-guard-rpg",
   "version": "1.0.0",
-  "description": "A Simple Login Example using Node.js, Mongo and Redis",
+  "description": "A React and Express RPG dialogue prototype with MongoDB and Redis sessions",
   "main": "./server/app.js",
   "scripts": {
+    "build": "webpack",
     "webpack": "webpack",
     "webpackWatch": "webpack watch",
     "nodemon": "nodemon -e js,html,css --watch ./server --watch ./hosted ./server/app.js",
     "start": "node ./server/app.js",
-    "pretest": "eslint ./server --fix",
-    "test": "echo \"Tests complete\"",
+    "lint": "eslint ./server",
+    "test": "npm run lint && npm run build",
     "heroku-postbuild": "webpack"
   },
   "keywords": [
     "Node",
     "MVC",
     "Redis",
-    "Login"
+    "Login",
+    "RPG",
+    "Chat"
   ],
   "author": "Cody Van De Mark / Austin Willoughby",
   "license": "Apache 2.0",

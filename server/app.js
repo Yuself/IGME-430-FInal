@@ -11,7 +11,6 @@ const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { engine } = require('express-handlebars');
-//domo c
 const redis = require('redis');
 const { RedisStore } = require('connect-redis');
 
@@ -20,16 +19,15 @@ const session = require('express-session');
 const router = require('./router.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
-const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/DomoMaker';
+const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/archive-guard-rpg';
+const sessionSecret = process.env.SESSION_SECRET || 'dev-session-secret';
 
 mongoose.connect(dbURI);
 
-// domo c
 const redisClient = redis.createClient({
     url: process.env.REDISCLOUD_URL,
 });
 
-// please to god work this time
 redisClient.on('error', (err) => {
     process.stderr.write(`${err}\n`);
 });
@@ -42,13 +40,12 @@ redisClient.connect().then(() => {
     app.use(compression());
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
-    //changed domo c
     app.use(session({
         key: 'sessionid',
         store: new RedisStore({
             client: redisClient,
         }),
-        secret: 'Domo Maker',
+        secret: sessionSecret,
         resave: false,
         saveUninitialized: false,
     }));
