@@ -93,6 +93,7 @@ const Navbar = () => {
                 <a href="#home">Home</a>
                 <a href="#chat">Chat</a>
                 <a href="#how-it-works">How It Works</a>
+                <a href="#account">Account</a>
                 <a href="#about">About</a>
                 <a href="/logout">Log out</a>
             </div>
@@ -710,6 +711,242 @@ const ChatSection = () => {
 };
 
 
+/* Account section for changing the logged-in user's password */
+const AccountSection = () => {
+    const [currentPass, setCurrentPass] = useState('');
+    const [newPass, setNewPass] = useState('');
+    const [newPass2, setNewPass2] = useState('');
+    const [statusMessage, setStatusMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [accountStatus, setAccountStatus] = useState({
+        username: '',
+        premiumTier: 'free',
+        premiumExpiresAt: null,
+        isPremium: false,
+    });
+    const [isPremiumLoading, setIsPremiumLoading] = useState(false);
+
+    const planLabels = {
+        hourly: 'Hourly',
+        daily: 'Daily',
+        weekly: 'Weekly',
+        monthly: 'Monthly',
+    };
+
+    const loadAccountStatus = async () => {
+        try {
+            const response = await fetch('/accountStatus');
+            const data = await response.json();
+
+            if (!response.ok) {
+                setErrorMessage(data.error || 'Failed to load account status.');
+                return;
+            }
+
+            setAccountStatus(data);
+        } catch (err) {
+            setErrorMessage('Failed to load account status.');
+        }
+    };
+
+    useEffect(() => {
+        loadAccountStatus();
+    }, []);
+
+    const activatePremiumPlan = async (plan) => {
+        setStatusMessage('');
+        setErrorMessage('');
+        setIsPremiumLoading(true);
+
+        try {
+            const response = await fetch('/activatePremium', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ plan }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setErrorMessage(data.error || 'Failed to activate premium demo.');
+                return;
+            }
+
+            setAccountStatus(data.account);
+            setStatusMessage(data.message || 'Premium demo activated.');
+        } catch (err) {
+            setErrorMessage('Failed to activate premium demo.');
+        } finally {
+            setIsPremiumLoading(false);
+        }
+    };
+
+    const cancelPremiumPlan = async () => {
+        setStatusMessage('');
+        setErrorMessage('');
+        setIsPremiumLoading(true);
+
+        try {
+            const response = await fetch('/cancelPremium', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setErrorMessage(data.error || 'Failed to cancel premium demo.');
+                return;
+            }
+
+            setAccountStatus(data.account);
+            setStatusMessage(data.message || 'Premium demo canceled.');
+        } catch (err) {
+            setErrorMessage('Failed to cancel premium demo.');
+        } finally {
+            setIsPremiumLoading(false);
+        }
+    };
+
+    const formatExpiration = () => {
+        if (!accountStatus.premiumExpiresAt) {
+            return 'Not active';
+        }
+
+        return new Date(accountStatus.premiumExpiresAt).toLocaleString();
+    };
+
+    const submitPasswordChange = async (e) => {
+        e.preventDefault();
+        setStatusMessage('');
+        setErrorMessage('');
+
+        if (!currentPass || !newPass || !newPass2) {
+            setErrorMessage('All password fields are required.');
+            return;
+        }
+
+        if (newPass !== newPass2) {
+            setErrorMessage('New passwords do not match.');
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('/changePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    currentPass,
+                    newPass,
+                    newPass2,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setErrorMessage(data.error || 'Password change failed.');
+                return;
+            }
+
+            setCurrentPass('');
+            setNewPass('');
+            setNewPass2('');
+            setStatusMessage(data.message || 'Password changed successfully.');
+        } catch (err) {
+            setErrorMessage('Password change failed.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <section id="account" className="pageSection">
+            <div className="sectionContent">
+                <h2>Account</h2>
+                <div className="accountPanel">
+                    <h3>Premium Demo</h3>
+                    <p><strong>Current Plan:</strong> {accountStatus.premiumTier}</p>
+                    <p><strong>Status:</strong> {accountStatus.isPremium ? 'Premium active' : 'Free'}</p>
+                    <p><strong>Expires:</strong> {formatExpiration()}</p>
+
+                    <div className="premiumPlanGrid">
+                        {Object.keys(planLabels).map((plan) => (
+                            <button
+                                type="button"
+                                key={plan}
+                                onClick={() => activatePremiumPlan(plan)}
+                                disabled={isPremiumLoading}
+                            >
+                                {planLabels[plan]}
+                            </button>
+                        ))}
+                    </div>
+
+                    <button
+                        type="button"
+                        className="secondaryActionBtn"
+                        onClick={cancelPremiumPlan}
+                        disabled={isPremiumLoading || !accountStatus.isPremium}
+                    >
+                        Cancel Premium Demo
+                    </button>
+                </div>
+
+                <form className="accountForm" onSubmit={submitPasswordChange}>
+                    <h3>Password</h3>
+                    <label>
+                        Current Password
+                        <input
+                            type="password"
+                            value={currentPass}
+                            onChange={(e) => setCurrentPass(e.target.value)}
+                            autoComplete="current-password"
+                        />
+                    </label>
+
+                    <label>
+                        New Password
+                        <input
+                            type="password"
+                            value={newPass}
+                            onChange={(e) => setNewPass(e.target.value)}
+                            autoComplete="new-password"
+                        />
+                    </label>
+
+                    <label>
+                        Confirm New Password
+                        <input
+                            type="password"
+                            value={newPass2}
+                            onChange={(e) => setNewPass2(e.target.value)}
+                            autoComplete="new-password"
+                        />
+                    </label>
+
+                    {errorMessage && <p className="formError">{errorMessage}</p>}
+                    {statusMessage && <p className="formSuccess">{statusMessage}</p>}
+
+                    <button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? 'Changing...' : 'Change Password'}
+                    </button>
+                </form>
+            </div>
+        </section>
+    );
+};
+
+
 
 /* How it works section */
 const HowItWorksSection = () => {
@@ -765,6 +1002,7 @@ const App = () => {
                 <HomeSection />
                 <ChatSection />
                 <HowItWorksSection />
+                <AccountSection />
                 <AboutSection />
             </main>
         </div>

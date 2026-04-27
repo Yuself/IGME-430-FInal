@@ -33,6 +33,16 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  premiumTier: {
+    type: String,
+    required: true,
+    enum: ['free', 'hourly', 'daily', 'weekly', 'monthly'],
+    default: 'free',
+  },
+  premiumExpiresAt: {
+    type: Date,
+    default: null,
+  },
   createdDate: {
     type: Date,
     default: Date.now,
@@ -43,6 +53,8 @@ const AccountSchema = new mongoose.Schema({
 AccountSchema.statics.toAPI = (doc) => ({
   username: doc.username,
   _id: doc._id,
+  premiumTier: doc.premiumTier,
+  premiumExpiresAt: doc.premiumExpiresAt,
 });
 
 // Helper function to hash a password

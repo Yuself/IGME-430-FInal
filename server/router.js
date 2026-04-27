@@ -8,6 +8,10 @@ const router = (app) => {
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
 
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
+  app.post('/changePassword', mid.requiresLogin, controllers.Account.changePassword);
+  app.get('/accountStatus', mid.requiresLogin, controllers.Account.accountStatus);
+  app.post('/activatePremium', mid.requiresLogin, controllers.Account.activatePremium);
+  app.post('/cancelPremium', mid.requiresLogin, controllers.Account.cancelPremium);
   app.post('/deleteDomo', mid.requiresLogin, controllers.Domo.deleteDomo);
 
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
