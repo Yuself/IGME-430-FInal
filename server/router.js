@@ -1,8 +1,6 @@
 const controllers = require('./controllers');
-//domo c
 const mid = require('./middleware');
 
-//changed for domo c
 const router = (app) => {
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
@@ -12,14 +10,10 @@ const router = (app) => {
   app.get('/accountStatus', mid.requiresLogin, controllers.Account.accountStatus);
   app.post('/activatePremium', mid.requiresLogin, controllers.Account.activatePremium);
   app.post('/cancelPremium', mid.requiresLogin, controllers.Account.cancelPremium);
-  app.post('/deleteDomo', mid.requiresLogin, controllers.Domo.deleteDomo);
 
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
-  app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);
-  // domo D
-  app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
-  app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
+  app.get('/app', mid.requiresLogin, (req, res) => res.render('app'));
 
   //final
   app.post('/chat', mid.requiresLogin, controllers.Chat.chat);

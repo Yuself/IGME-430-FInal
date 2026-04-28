@@ -23,7 +23,6 @@ const getPremiumStatus = (account) => {
   };
 };
 
-// Domo B
 const logout = (req, res) => {
   req.session.destroy();
   return res.redirect('/');
@@ -46,10 +45,9 @@ const login = (req, res) => {
       return res.status(401).json({ error: 'Wrong username or password.' });
     }
     
-    // Demo B
     req.session.account = Account.toAPI(doc);
 
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: '/app' });
   });
 };
 
@@ -78,7 +76,7 @@ try {
 
     const newAccount = await accountData.save();
     req.session.account = Account.toAPI(newAccount);
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: '/app' });
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use.' });

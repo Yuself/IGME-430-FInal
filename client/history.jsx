@@ -8,7 +8,7 @@ const Navbar = () => {
         <nav className="mainNav">
             <div className="brand">supercoolaiChatter</div>
             <div className="navLinks">
-                <a href="/maker#chat">Chat</a>
+                <a href="/app#chat">Chat</a>
                 <a href="/history">History</a>
                 <a href="/logout">Log out</a>
             </div>
