@@ -6,7 +6,7 @@ const { useState, useEffect } = React;
 const Navbar = () => {
     return (
         <nav className="mainNav">
-            <div className="brand">supercoolaiChatter</div>
+            <div className="brand">Archive Guard RPG</div>
             <div className="navLinks">
                 <a href="/app#chat">Chat</a>
                 <a href="/history">History</a>

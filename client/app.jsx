@@ -88,7 +88,7 @@ const getStructuredResponse = (message) => {
 const Navbar = () => {
     return (
         <nav className="mainNav">
-            <div className="brand">supercoolaiChatter</div>
+            <div className="brand">Archive Guard RPG</div>
             <div className="navLinks">
                 <a href="#home">Home</a>
                 <a href="#chat">Chat</a>
@@ -106,7 +106,7 @@ const HomeSection = () => {
     return (
         <section id="home" className="pageSection heroSection">
             <div className="sectionContent">
-                <h1>supercoolaiChatter</h1>
+                <h1>Archive Guard RPG</h1>
                 <p>
                     A small web prototype for testing NPC dialogue with baseline and
                     structured response modes.

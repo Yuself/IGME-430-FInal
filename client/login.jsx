@@ -53,11 +53,11 @@ const LoginWindow = (props) => {
       method="POST"
       className="mainForm"
     >
-      <label htmlFor="username">Username: </label>
-      <input id="user" type="text" name="username" placeholder="username"/>
+      <label htmlFor="user">Username: </label>
+      <input id="user" type="text" name="username" placeholder="username" autoComplete="username" />
 
       <label htmlFor="pass">Password: </label>
-      <input id="pass" type="password" name="pass" placeholder="password"/>
+      <input id="pass" type="password" name="pass" placeholder="password" autoComplete="current-password" />
 
       <input className="formSubmit" type="submit" value="Sign In" />
     </form>
@@ -73,14 +73,14 @@ const SignupWindow = (props) => {
       method="POST"
       className="mainForm"
     >
-      <label htmlFor="username">Username: </label>
-      <input id="user" type="text" name="username" placeholder="username"/>
+      <label htmlFor="user">Username: </label>
+      <input id="user" type="text" name="username" placeholder="username" autoComplete="username" />
 
       <label htmlFor="pass">Password: </label>
-      <input id="pass" type="password" name="pass" placeholder="password"/>
+      <input id="pass" type="password" name="pass" placeholder="password" autoComplete="new-password" />
 
-      <label htmlFor="pass2">Password: </label>
-      <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
+      <label htmlFor="pass2">Retype Password: </label>
+      <input id="pass2" type="password" name="pass2" placeholder="retype password" autoComplete="new-password" />
 
       <input className="formSubmit" type="submit" value="Sign Up" />
     </form>
@@ -106,16 +106,26 @@ const init = () => {
   const loginLink = navLinks[0];
   const signupLink = navLinks[1];
 
+  const setActiveLink = (activeLink) => {
+    loginLink.classList.toggle('active', activeLink === loginLink);
+    signupLink.classList.toggle('active', activeLink === signupLink);
+  };
+
   loginLink.addEventListener('click', (e) => {
     e.preventDefault();
+    hideError();
+    setActiveLink(loginLink);
     renderLogin(root);
   });
 
   signupLink.addEventListener('click', (e) => {
     e.preventDefault();
+    hideError();
+    setActiveLink(signupLink);
     renderSignup(root);
   });
 
+  setActiveLink(loginLink);
   renderLogin(root);
 };
 
