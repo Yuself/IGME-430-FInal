@@ -14,6 +14,7 @@ const router = (app) => {
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
   app.get('/app', mid.requiresLogin, (req, res) => res.render('app'));
+  app.get('/maker', mid.requiresLogin, (req, res) => res.redirect('/app'));
 
   //final
   app.post('/chat', mid.requiresLogin, controllers.Chat.chat);
